@@ -1,0 +1,29 @@
+{
+  "name": "com.xaxam.swarmlabecs",
+  "version": "0.0.1",
+  "displayName": "SwarmLabECS",
+  "description": "Package to simplify the creation of rule-based particle systems within the runtime environment. This package relies on the Unity DOTS technology for better performances",
+  "unity": "6000.2",
+  "samples": [
+    {
+      "displayName": "Boids Demo",
+      "description": "Contains two simple scene demonstrating a 2D and 3D simple boids implementation.",
+      "path": "Samples~/Boids Demo"
+    },
+    {
+      "displayName": "Boids Rules",
+      "description": "Contains the three rules used to implement a simple boids system plus a bounding box rule.",
+      "path": "Samples~/Boids Demo/Boids Rules"
+    }
+  ],
+  "author": {
+    "name": "Maxime Chalumeau",
+    "email": "maximecha14@gmail.com",
+    "url": ""
+  },
+  "dependencies": {
+    "com.unity.entities": "1.4.4",
+    "com.unity.entities.graphics": "1.4.17",
+    "com.unity.physics": "1.4.4"
+  }
+}
