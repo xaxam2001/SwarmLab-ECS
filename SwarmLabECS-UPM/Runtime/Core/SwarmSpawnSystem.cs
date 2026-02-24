@@ -3,12 +3,14 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Burst;
+using Random = Unity.Mathematics.Random;
 
 namespace SwarmLabECS.Core
 {
     [BurstCompile]
     public partial struct SwarmSpawnSystem : ISystem
     {
+        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<SpeciesSpawnConfig>();
@@ -33,22 +35,33 @@ namespace SwarmLabECS.Core
             // Ensure the seed is never 0 (Random throws an error if the seed is 0)
             uint baseSeed = (uint)(SystemAPI.Time.ElapsedTime * 1000.0) + 1u;
 
+            int speciesID = 0;
+            
             foreach (var species in safeArray)
             {
-                if (species.count <= 0) continue;
+                if (species.Count <= 0) continue;
                 
                 // THE TRICK: We overwrite the component on the PREFAB itself.
-                state.EntityManager.SetComponentData(species.prefabEntity, new BoidSpawnSetup
+                state.EntityManager.SetComponentData(species.PrefabEntity, new BoidSpawnSetup
                 {
-                    center = species.spawnCenter,
-                    radius = species.spawnRadius,
-                    initialSpeed = species.initialRandomVelocity
+                    Center = species.SpawnOffset,
+                    Radius = species.SpawnRadius,
+                    InitialSpeed = species.InitialRandomVelocity
                 });
+                
+                EntitySettings settings = state.EntityManager.GetComponentData<EntitySettings>(species.PrefabEntity);
+    
+                // 2. Modify only the Species ID
+                settings.SpeciesId = speciesID;
+    
+                // 3. Write the modified struct back to the prefab
+                state.EntityManager.SetComponentData(species.PrefabEntity, settings);
                 
                 // The 'using' keyword ensures .Dispose() is called automatically when the function ends (like a destructor).
                 // this prevents memory leaks
-                using var tempInstances = state.EntityManager.Instantiate(species.prefabEntity, species.count, Allocator.Temp);
+                using var tempInstances = state.EntityManager.Instantiate(species.PrefabEntity, species.Count, Allocator.Temp);
 
+                speciesID += 1;
             }
             
             // We schedule the job exactly ONCE, outside the loop.
@@ -81,13 +94,13 @@ namespace SwarmLabECS.Core
             /* Here, the uniform randomness will cause the boids to cluster slightly more into the center of the
              sphere. Not especially an issue, but for true uniform random the cube root of the random number can
              be used */
-            float randomDistance = random.NextFloat(0f, setup.radius);
+            float randomDistance = random.NextFloat(0f, setup.Radius);
             float3 randomOffset = random.NextFloat3Direction() * randomDistance;
 
             // Write the data directly to the ECS memory chunks
-            transform.Position = setup.center + randomOffset;
+            transform.Position = setup.Center + randomOffset;
 
-            entityVelocity.value = random.NextFloat3Direction() * setup.initialSpeed;
+            entityVelocity.Value = random.NextFloat3Direction() * setup.InitialSpeed;
 
             newEntityTag.ValueRW = false;
         }

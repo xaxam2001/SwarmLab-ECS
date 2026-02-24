@@ -66,9 +66,8 @@ namespace SwarmLabECS.Core
                 if (simulationMode != SimulationMode.Volumetric) continue;
                 if (!drawSpawnZones) continue;
                 
-                
                 // Generate a consistent color based on the species name
-                Color speciesColor = species.prefab == null? 
+                Color speciesColor = species.prefab == null ? 
                     Color.limeGreen:
                     Color.HSVToRGB(
                     (species.prefab.name.GetHashCode() * 0.13f) % 1f,
@@ -76,11 +75,11 @@ namespace SwarmLabECS.Core
                 
                 Gizmos.color = speciesColor;
 
-                Gizmos.DrawWireSphere(species.spawnCenter, species.radius);
+                Gizmos.DrawWireSphere(species.spawnOffset, species.radius);
 
                 // Draw a small solid sphere at the center of the zone
                 Gizmos.color = new Color(speciesColor.r, speciesColor.g, speciesColor.b, 0.4f);
-                Gizmos.DrawSphere(species.spawnCenter, 0.05f);
+                Gizmos.DrawSphere(species.spawnOffset, 0.05f);
 
             }
         

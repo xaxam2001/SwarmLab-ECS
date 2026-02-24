@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 222e66bc16453ba41884be769912a515, type: 3}
-  m_Name: Default Species Definition
+  m_Name: Red Species Def
   m_EditorClassIdentifier: SwarmLabECS.Runtime::SwarmLabECS.Core.SpeciesDefinition
   speciesName: Red Cube
-  maxSpeed: 1
+  maxSpeed: 10

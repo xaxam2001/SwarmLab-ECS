@@ -150,21 +150,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: SwarmLabECS.Runtime::SwarmLabECS.Core.SwarmConfigAuthoring
   speciesList:
   - prefab: {fileID: 6749234096300592548, guid: 3e4883256ebe46a47bfeaa6c658130b0, type: 3}
-    count: 500
-    initialRandomVelocity: 0
-    radius: 4
-    spawnCenter:
+    initialRandomVelocity: 0.01
+    count: 20000
+    radius: 9.58
+    spawnOffset:
       x: 0
       y: 0
       z: 0
+    rules:
+    - targetSpeciesName: 'Red Cube Entity (ID: 0)'
+      separationRadius: 1.5
+      flockingRadius: 2
+      separationWeight: 1.5
+      alignmentWeight: 1
+      cohesionWeight: 1
+    - targetSpeciesName: 'Green Cube Entity (ID: 1)'
+      separationRadius: 1
+      flockingRadius: 0
+      separationWeight: 1
+      alignmentWeight: 0
+      cohesionWeight: 0
   - prefab: {fileID: 6749234096300592548, guid: 9d299f32f4e7b1e47921509919f70c85, type: 3}
-    count: 2000
-    initialRandomVelocity: 0
+    initialRandomVelocity: 0.1
+    count: 10000
     radius: 2
-    spawnCenter:
-      x: -5.51
+    spawnOffset:
+      x: -4.96
       y: 0
-      z: -2.16
+      z: 0
+    rules:
+    - targetSpeciesName: 'Red Cube Entity (ID: 0)'
+      separationRadius: 1
+      flockingRadius: 0
+      separationWeight: 1
+      alignmentWeight: 0
+      cohesionWeight: 0
+    - targetSpeciesName: 'Green Cube Entity (ID: 1)'
+      separationRadius: 2
+      flockingRadius: 3
+      separationWeight: 1.5
+      alignmentWeight: 1
+      cohesionWeight: 1
 --- !u!4 &545869373
 Transform:
   m_ObjectHideFlags: 0

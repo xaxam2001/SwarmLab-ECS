@@ -20,14 +20,14 @@ namespace SwarmLabECS.Core
                 
                 AddComponent(entity, new EntityVelocity
                 {
-                    value = float3.zero
+                    Value = float3.zero
                 });
 
                 if (authoring.speciesDefinition != null)
                 {
                     AddComponent(entity, new EntitySettings
                     {
-                        maxSpeed = authoring.speciesDefinition.maxSpeed
+                        MaxSpeed = authoring.speciesDefinition.maxSpeed
                     });
                 }
             }
@@ -36,12 +36,13 @@ namespace SwarmLabECS.Core
     
     public struct EntityVelocity : IComponentData
     {
-        public float3 value;
+        public float3 Value;
     }
     
     public struct EntitySettings : IComponentData
     {
-        public float maxSpeed;
+        public int SpeciesId;
+        public float MaxSpeed;
     }
     
     public struct BoidTag : IComponentData {}
@@ -51,8 +52,8 @@ namespace SwarmLabECS.Core
     // use to fast spawning for the different species
     public struct BoidSpawnSetup : IComponentData
     {
-        public float3 center;
-        public float radius;
-        public float initialSpeed;
+        public float3 Center;
+        public float Radius;
+        public float InitialSpeed;
     }
 }

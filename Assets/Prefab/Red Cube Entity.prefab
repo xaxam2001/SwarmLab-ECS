@@ -124,4 +124,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd5d2b58ee647854a9886f39c1ec3bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SwarmLabECS.Runtime::SwarmLabECS.Core.EntityAuthoring
-  speciesDefinition: {fileID: 0}
+  speciesDefinition: {fileID: 11400000, guid: 0c25ac3fd74a3834eb53fd0a8ae24421, type: 2}
