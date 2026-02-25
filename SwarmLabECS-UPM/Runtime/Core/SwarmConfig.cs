@@ -10,7 +10,7 @@ namespace SwarmLabECS.Core
         [System.Serializable]
         public class RuleSetup
         {
-            public string targetSpeciesName;
+            [HideInInspector] public string targetSpeciesName;
     
             public float separationRadius;
             public float flockingRadius;

@@ -151,8 +151,8 @@ MonoBehaviour:
   speciesList:
   - prefab: {fileID: 6749234096300592548, guid: 3e4883256ebe46a47bfeaa6c658130b0, type: 3}
     initialRandomVelocity: 0.01
-    count: 20000
-    radius: 9.58
+    count: 30000
+    radius: 100
     spawnOffset:
       x: 0
       y: 0
@@ -172,8 +172,8 @@ MonoBehaviour:
       cohesionWeight: 0
   - prefab: {fileID: 6749234096300592548, guid: 9d299f32f4e7b1e47921509919f70c85, type: 3}
     initialRandomVelocity: 0.1
-    count: 10000
-    radius: 2
+    count: 30000
+    radius: 20
     spawnOffset:
       x: -4.96
       y: 0

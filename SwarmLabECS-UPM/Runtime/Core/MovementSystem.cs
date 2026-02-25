@@ -36,7 +36,7 @@ namespace SwarmLabECS.Core
             
             int totalSpeciesCount = SystemAPI.GetSingleton<SwarmGlobalSettings>().TotalSpeciesCount;
             
-            float cellSize = 5f; 
+            float cellSize = 3f; 
             GridHash gridHash = new GridHash(cellSize);
 
             // make a spatial map for each boid
