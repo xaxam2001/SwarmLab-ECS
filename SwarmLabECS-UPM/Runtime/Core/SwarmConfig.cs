@@ -29,6 +29,17 @@ namespace SwarmLabECS.Core
             public float radius;
             public float3 spawnOffset;
             
+            [Header("Gravity Parameters")]
+            public bool hasGravity;
+            public float gravityValue = 9.81f;
+            public float raycastStartHeight = 5f;
+            public float raycastLength = 10f;
+        
+            // Hooke's Law settings
+            public float hoverHeight = 0.1f;
+            public float springStrength = 100f;
+            public float damping = 5f;
+            
             [Header("Rules Against Other Species")]
             public List<RuleSetup> rules;
         }
@@ -68,7 +79,14 @@ namespace SwarmLabECS.Core
                         Count = species.count,
                         InitialRandomVelocity = species.initialRandomVelocity,
                         SpawnRadius = species.radius,
-                        SpawnOffset = species.spawnOffset
+                        SpawnOffset = species.spawnOffset,
+                        HasGravity = species.hasGravity,
+                        GravityValue = species.gravityValue,
+                        RaycastStartHeight = species.raycastStartHeight,
+                        RaycastLength = species.raycastLength,
+                        HoverHeight = species.hoverHeight,
+                        SpringStrength = species.springStrength,
+                        Damping = species.damping,
                     });
                     
                     foreach (var rule in species.rules)
@@ -134,6 +152,17 @@ namespace SwarmLabECS.Core
 
         public float SpawnRadius;
         public float3 SpawnOffset;
+
+        public bool HasGravity;
+        
+        public float GravityValue;
+        public float RaycastStartHeight;
+        public float RaycastLength;
+        
+        // Hooke's Law settings
+        public float HoverHeight;
+        public float SpringStrength;
+        public float Damping;
     }
     
     public struct InteractionRule : IBufferElementData

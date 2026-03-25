@@ -48,7 +48,21 @@ namespace SwarmLabECS.Core
                     Radius = species.SpawnRadius,
                     InitialSpeed = species.InitialRandomVelocity
                 });
-                
+
+                if (species.HasGravity)
+                {
+                    state.EntityManager.AddComponent<EntityGravity>(species.PrefabEntity);
+                    state.EntityManager.SetComponentData(species.PrefabEntity, new EntityGravity
+                    {
+                        Value = species.GravityValue,
+                        RaycastStartHeight = species.RaycastStartHeight,
+                        RaycastLength = species.RaycastLength,
+                        HoverHeight = species.HoverHeight,
+                        SpringStrength = species.SpringStrength,
+                        Damping = species.Damping
+                    });
+                }
+
                 EntitySettings settings = state.EntityManager.GetComponentData<EntitySettings>(species.PrefabEntity);
     
                 // 2. Modify only the Species ID

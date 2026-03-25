@@ -3,12 +3,16 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Physics.Systems;
 using Unity.Transforms;
 
 namespace SwarmLabECS.Core
 {
     
     [BurstCompile]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(BuildPhysicsWorld))]
     public partial struct MovementSystem : ISystem
     {
         [BurstCompile]
@@ -16,11 +20,17 @@ namespace SwarmLabECS.Core
         {
             state.RequireForUpdate<BoidTag>();
             state.RequireForUpdate<SwarmGlobalSettings>();
+            state.RequireForUpdate<PhysicsWorldSingleton>();
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            PhysicsWorldSingleton physicsSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+
+            ComponentLookup<EntityGravity>
+                gravityLookup = SystemAPI.GetComponentLookup<EntityGravity>(isReadOnly: true);
+            
             // getting the Interaction Matrix between the different species
             NativeArray<InteractionRule> interactionMatrixFlatten = SystemAPI.GetSingletonBuffer<InteractionRule>()
                 .ToNativeArray(Allocator.TempJob);
@@ -60,6 +70,8 @@ namespace SwarmLabECS.Core
                 AllVelocities = allVelocities,
                 DeltaTime = SystemAPI.Time.DeltaTime,
                 TotalSpeciesCount = totalSpeciesCount,
+                CollisionWorld = physicsSingleton.CollisionWorld,
+                GravityLookup = gravityLookup,
                 
                 SpatialMap = spatialMap,
                 GridHash = gridHash
@@ -80,18 +92,56 @@ namespace SwarmLabECS.Core
         [ReadOnly, DeallocateOnJobCompletion] public NativeArray<EntityVelocity> AllVelocities;
         [ReadOnly] public NativeParallelMultiHashMap<int, int> SpatialMap;
         [ReadOnly] public GridHash GridHash;
+        [ReadOnly] public CollisionWorld CollisionWorld;
+        [ReadOnly] public ComponentLookup<EntityGravity> GravityLookup;
         public float DeltaTime;
         public int TotalSpeciesCount;
         
-        private void Execute(ref LocalTransform transform,
+        private void Execute( Entity entity,
+            ref LocalTransform transform,
             ref EntityVelocity entityVelocity,
             in EntitySettings entitySettings)
         {
-
             float3 force = CalculateForce(transform, entityVelocity, entitySettings.SpeciesId, entitySettings.MaxSpeed);
 
-            entityVelocity.Value += force * DeltaTime;
+            if (GravityLookup.HasComponent(entity))
+            {
+                EntityGravity gravity = GravityLookup[entity]; // Extract the data safely
+            
+                force.y = 0f; // Override Y so swarm doesn't pull them into the sky
+                entityVelocity.Value += force * DeltaTime;
 
+                // Setup the Raycast
+                float3 rayStart = transform.Position + new float3(0, gravity.RaycastStartHeight, 0);
+                float3 rayDirection = new float3(0, -gravity.RaycastLength, 0);
+            
+                RaycastInput rayInput = new RaycastInput
+                {
+                    Start = rayStart,
+                    End = rayStart + rayDirection,
+                    Filter = CollisionFilter.Default
+                };
+
+                // Fire the Raycast
+                if (CollisionWorld.CastRay(rayInput, out RaycastHit hit))
+                {
+                    float currentHeightFromGround = transform.Position.y - hit.Position.y;
+                    float displacement = currentHeightFromGround - gravity.HoverHeight;
+                    float springForce = -gravity.SpringStrength * displacement;
+                    float dampingForce = -gravity.Damping * entityVelocity.Value.y;
+
+                    entityVelocity.Value.y += (springForce + dampingForce) * DeltaTime;
+                }
+                else
+                {
+                    entityVelocity.Value.y -= gravity.Value * DeltaTime;
+                }
+            }
+            else
+            {
+                entityVelocity.Value += force * DeltaTime;
+            }
+            
             float velMagnitude = math.lengthsq(entityVelocity.Value);
             
             if (velMagnitude > entitySettings.MaxSpeed * entitySettings.MaxSpeed)

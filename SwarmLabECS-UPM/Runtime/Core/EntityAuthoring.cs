@@ -30,8 +30,22 @@ namespace SwarmLabECS.Core
                         MaxSpeed = authoring.speciesDefinition.maxSpeed
                     });
                 }
+
+
             }
         }   
+    }
+
+    public struct EntityGravity : IComponentData
+    {
+        public float Value;
+        public float RaycastStartHeight;
+        public float RaycastLength;
+        
+        // Hooke's Law settings
+        public float HoverHeight;
+        public float SpringStrength;
+        public float Damping;
     }
     
     public struct EntityVelocity : IComponentData
