@@ -4,15 +4,14 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
-using Unity.Physics.Systems;
 using Unity.Transforms;
+using SwarmLabECS.Utils;
 
 namespace SwarmLabECS.Core
 {
     
     [BurstCompile]
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    [UpdateAfter(typeof(BuildPhysicsWorld))]
     public partial struct MovementSystem : ISystem
     {
         [BurstCompile]

@@ -224,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 306421161}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.23077, y: -109.6, z: -7.89133}
+  m_LocalPosition: {x: 0, y: -45, z: 0}
   m_LocalScale: {x: 1000, y: 5, z: 1000}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -263,18 +263,23 @@ MonoBehaviour:
   - prefab: {fileID: 6749234096300592548, guid: 3e4883256ebe46a47bfeaa6c658130b0, type: 3}
     initialRandomVelocity: 0.01
     count: 3000
-    radius: 100
     spawnOffset:
-      x: 0
+      x: 50
       y: 0
       z: 0
+    useCubeSpawnZone: 1
+    cubeSize:
+      x: 50
+      y: 10
+      z: 50
+    radius: 50
     hasGravity: 1
-    gravityValue: 0
-    raycastStartHeight: 0
-    raycastLength: 0
-    hoverHeight: 0
-    springStrength: 0
-    damping: 0
+    gravityValue: 9.81
+    raycastStartHeight: 5
+    raycastLength: 10
+    hoverHeight: 0.05
+    springStrength: 200
+    damping: 20
     rules:
     - targetSpeciesName: 'Red Cube Entity (ID: 0)'
       separationRadius: 1.5
@@ -291,18 +296,23 @@ MonoBehaviour:
   - prefab: {fileID: 6749234096300592548, guid: 9d299f32f4e7b1e47921509919f70c85, type: 3}
     initialRandomVelocity: 0.1
     count: 3000
-    radius: 20
     spawnOffset:
-      x: -4.96
+      x: -5
       y: 0
       z: 0
-    hasGravity: 0
-    gravityValue: 0
-    raycastStartHeight: 0
-    raycastLength: 0
-    hoverHeight: 0
-    springStrength: 0
-    damping: 0
+    useCubeSpawnZone: 0
+    cubeSize:
+      x: 20
+      y: 20
+      z: 20
+    radius: 20
+    hasGravity: 1
+    gravityValue: 9.81
+    raycastStartHeight: 5
+    raycastLength: 10
+    hoverHeight: 0.05
+    springStrength: 200
+    damping: 20
     rules:
     - targetSpeciesName: 'Red Cube Entity (ID: 0)'
       separationRadius: 1
@@ -326,99 +336,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &889112862
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 889112865}
-  - component: {fileID: 889112864}
-  - component: {fileID: 889112863}
-  m_Layer: 0
-  m_Name: Terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!154 &889112863
-TerrainCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 889112862}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: 835badf34339bae4e893f597976d2797, type: 2}
-  m_EnableTreeColliders: 1
---- !u!218 &889112864
-Terrain:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 889112862}
-  m_Enabled: 1
-  serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: 835badf34339bae4e893f597976d2797, type: 2}
-  m_TreeDistance: 5000
-  m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
-  m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
-  m_HeightmapMinimumLODSimplification: 0
-  m_HeightmapMaximumLOD: 0
-  m_ShadowCastingMode: 2
-  m_DrawHeightmap: 1
-  m_DrawInstanced: 0
-  m_DrawTreesAndFoliage: 1
-  m_StaticShadowCaster: 0
-  m_IgnoreQualitySettings: 0
-  m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
-  m_BakeLightProbesForTrees: 1
-  m_PreserveTreePrototypeLayers: 0
-  m_DeringLightProbesForTrees: 1
-  m_ReceiveGI: 1
-  m_ScaleInLightmap: 0.0256
-  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
-  m_GroupingID: 0
-  m_RenderingLayerMask: 1
-  m_AllowAutoConnect: 1
-  m_EnableHeightmapRayTracing: 1
-  m_EnableTreesAndDetailsRayTracing: 0
-  m_TreeMotionVectorModeOverride: 3
---- !u!4 &889112865
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 889112862}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -380, y: -129, z: -298}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -455,9 +372,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: SwarmLabECS.Runtime::SwarmLabECS.Core.SwarmManager
   drawSpawnZones: 1
   swarmConfig: {fileID: 545869372}
-  simulationMode: 0
-  planarBoundary: {fileID: 0}
-  planarSize: {x: 50, y: 50}
 --- !u!4 &1620067393
 Transform:
   m_ObjectHideFlags: 0
@@ -480,4 +394,3 @@ SceneRoots:
   - {fileID: 1620067393}
   - {fileID: 545869373}
   - {fileID: 306421165}
-  - {fileID: 889112865}

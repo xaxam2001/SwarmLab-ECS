@@ -26,8 +26,15 @@ namespace SwarmLabECS.Core
             public EntityAuthoring prefab;
             public float initialRandomVelocity;
             public int count;
-            public float radius;
+            
+            [Tooltip("Spawn location in Global coordinates")]
             public float3 spawnOffset;
+            [Tooltip("Default spawn shape is a sphere")]
+            public bool useCubeSpawnZone;
+            [Tooltip("Only when the spawn zone is a cube")]
+            public float3 cubeSize;
+            [Tooltip("Only when the spawn zone is a sphere")]
+            public float radius;
             
             [Header("Gravity Parameters")]
             public bool hasGravity;
@@ -78,8 +85,10 @@ namespace SwarmLabECS.Core
                         PrefabEntity = entityPrefab,
                         Count = species.count,
                         InitialRandomVelocity = species.initialRandomVelocity,
+                        UseCubeSpawnZone = species.useCubeSpawnZone,
+                        SpawnCenter = species.spawnOffset,
+                        SpawnCubeSize = species.cubeSize,
                         SpawnRadius = species.radius,
-                        SpawnOffset = species.spawnOffset,
                         HasGravity = species.hasGravity,
                         GravityValue = species.gravityValue,
                         RaycastStartHeight = species.raycastStartHeight,
@@ -150,8 +159,10 @@ namespace SwarmLabECS.Core
 
         public float InitialRandomVelocity;
 
+        public bool UseCubeSpawnZone;
         public float SpawnRadius;
-        public float3 SpawnOffset;
+        public float3 SpawnCubeSize;
+        public float3 SpawnCenter;
 
         public bool HasGravity;
         

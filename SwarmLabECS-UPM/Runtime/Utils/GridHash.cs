@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace SwarmLabECS.Core
+namespace SwarmLabECS.Utils
 {
     public struct GridHash
     {

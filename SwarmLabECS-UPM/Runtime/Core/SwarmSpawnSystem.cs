@@ -44,8 +44,10 @@ namespace SwarmLabECS.Core
                 // THE TRICK: We overwrite the component on the PREFAB itself.
                 state.EntityManager.SetComponentData(species.PrefabEntity, new BoidSpawnSetup
                 {
-                    Center = species.SpawnOffset,
+                    UseCubeSpawn = species.UseCubeSpawnZone,
+                    Center = species.SpawnCenter,
                     Radius = species.SpawnRadius,
+                    CubeSize = species.SpawnCubeSize,
                     InitialSpeed = species.InitialRandomVelocity
                 });
 
@@ -105,12 +107,20 @@ namespace SwarmLabECS.Core
         {
             var random = Random.CreateFromIndex(BaseSeed + (uint)index);
 
-            /* Here, the uniform randomness will cause the boids to cluster slightly more into the center of the
-             sphere. Not especially an issue, but for true uniform random the cube root of the random number can
-             be used */
-            float randomDistance = random.NextFloat(0f, setup.Radius);
-            float3 randomOffset = random.NextFloat3Direction() * randomDistance;
-
+            float3 randomOffset;
+            if (setup.UseCubeSpawn)
+            {
+                float3 halfSize = setup.CubeSize * 0.5f;
+                randomOffset = random.NextFloat3(-halfSize, halfSize);
+            }
+            else
+            {
+                /* Here, the uniform randomness will cause the boids to cluster slightly more into the center of the
+                 sphere. Not especially an issue, but for true uniform random the cube root of the random number can
+                 be used */
+                float randomDistance = random.NextFloat(0f, setup.Radius);
+                randomOffset = random.NextFloat3Direction() * randomDistance;
+            }
             // Write the data directly to the ECS memory chunks
             transform.Position = setup.Center + randomOffset;
 

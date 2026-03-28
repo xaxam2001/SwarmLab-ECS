@@ -66,8 +66,10 @@ namespace SwarmLabECS.Core
     // use to fast spawning for the different species
     public struct BoidSpawnSetup : IComponentData
     {
+        public bool UseCubeSpawn;
         public float3 Center;
         public float Radius;
+        public float3 CubeSize;
         public float InitialSpeed;
     }
 }
