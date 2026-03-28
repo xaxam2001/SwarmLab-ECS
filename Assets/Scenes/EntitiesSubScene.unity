@@ -263,6 +263,7 @@ MonoBehaviour:
   hashGridCellSize: 3
   speciesList:
   - prefab: {fileID: 6749234096300592548, guid: 3e4883256ebe46a47bfeaa6c658130b0, type: 3}
+    maxSpeed: 12
     initialRandomVelocity: 0.01
     count: 3000
     spawnOffset:
@@ -296,6 +297,7 @@ MonoBehaviour:
       alignmentWeight: 0
       cohesionWeight: 0
   - prefab: {fileID: 6749234096300592548, guid: 9d299f32f4e7b1e47921509919f70c85, type: 3}
+    maxSpeed: 10
     initialRandomVelocity: 0.1
     count: 3000
     spawnOffset:

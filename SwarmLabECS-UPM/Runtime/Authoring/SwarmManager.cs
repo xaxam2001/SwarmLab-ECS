@@ -1,8 +1,9 @@
 using Unity.Entities;
 using UnityEngine;
 using NaughtyAttributes;
+using SwarmLabECS.Components;
 
-namespace SwarmLabECS.Core
+namespace SwarmLabECS.Authoring
 {
 
     public class SwarmManager : MonoBehaviour

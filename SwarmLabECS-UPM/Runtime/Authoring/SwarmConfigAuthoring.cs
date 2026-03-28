@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using SwarmLabECS.Components;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace SwarmLabECS.Core
+namespace SwarmLabECS.Authoring
 {
     public class SwarmConfigAuthoring : MonoBehaviour
     {
@@ -24,6 +25,7 @@ namespace SwarmLabECS.Core
         public class SpeciesSetup
         {
             public EntityAuthoring prefab;
+            public float maxSpeed = 10;
             public float initialRandomVelocity;
             public int count;
             
@@ -89,10 +91,17 @@ namespace SwarmLabECS.Core
                         PrefabEntity = entityPrefab,
                         Count = species.count,
                         InitialRandomVelocity = species.initialRandomVelocity,
+                        
+                        // Speed param
+                        MaxSpeed = species.maxSpeed,
+                        
+                        // Spawn area related
                         UseCubeSpawnZone = species.useCubeSpawnZone,
                         SpawnCenter = species.spawnOffset,
                         SpawnCubeSize = species.cubeSize,
                         SpawnRadius = species.radius,
+                        
+                        // Gravity related
                         HasGravity = species.hasGravity,
                         GravityValue = species.gravityValue,
                         RaycastStartHeight = species.raycastStartHeight,
@@ -156,44 +165,6 @@ namespace SwarmLabECS.Core
         }
     }
     
-    public struct SpeciesSpawnConfig : IBufferElementData
-    {
-        public Entity PrefabEntity; // The BAKED version of the prefab
-        public int Count;
 
-        public float InitialRandomVelocity;
-
-        public bool UseCubeSpawnZone;
-        public float SpawnRadius;
-        public float3 SpawnCubeSize;
-        public float3 SpawnCenter;
-
-        public bool HasGravity;
-        
-        public float GravityValue;
-        public float RaycastStartHeight;
-        public float RaycastLength;
-        
-        // Hooke's Law settings
-        public float HoverHeight;
-        public float SpringStrength;
-        public float Damping;
-    }
-    
-    public struct InteractionRule : IBufferElementData
-    {
-        public float SeparationRadius;
-        public float FlockingRadius;
-    
-        public float SeparationWeight;
-        public float AlignmentWeight;
-        public float CohesionWeight;
-    }
-    
-    public struct SwarmGlobalSettings : IComponentData
-    {
-        public int TotalSpeciesCount;
-        public float CellSize;
-    }
     
 }

@@ -1,3 +1,4 @@
+using SwarmLabECS.Components;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -7,41 +8,50 @@ using Unity.Physics;
 using Unity.Transforms;
 using SwarmLabECS.Utils;
 
-namespace SwarmLabECS.Core
+namespace SwarmLabECS.Systems
 {
     
     [BurstCompile]
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial struct MovementSystem : ISystem
     {
+        private EntityQuery _boidQuery; // declared here and built in OnCreate to avoid any GC alloc in OnUpdate
+        
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<BoidTag>();
             state.RequireForUpdate<SwarmGlobalSettings>();
             state.RequireForUpdate<PhysicsWorldSingleton>();
+            
+            // Built once here to avoid allocating in OnUpdate
+            _boidQuery = SystemAPI.QueryBuilder()
+                .WithAll<BoidTag, LocalTransform, EntitySettings, EntityVelocity>()
+                .Build();
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            if (_boidQuery.IsEmpty) return;
+            
             PhysicsWorldSingleton physicsSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
             ComponentLookup<EntityGravity>
                 gravityLookup = SystemAPI.GetComponentLookup<EntityGravity>(isReadOnly: true);
             
             // getting the Interaction Matrix between the different species
-            NativeArray<InteractionRule> interactionMatrixFlatten = SystemAPI.GetSingletonBuffer<InteractionRule>()
-                .ToNativeArray(Allocator.TempJob);
+            DynamicBuffer<InteractionRule> interactionMatrixFlatten = SystemAPI.GetSingletonBuffer<InteractionRule>(isReadOnly: true);
             
+            // inefficient
             // getting all the transforms and all the boids setting (for the specie of each boids)
-            EntityQuery boidQuery = SystemAPI.QueryBuilder().WithAll<BoidTag, LocalTransform, EntitySettings, EntityVelocity>().Build();
+            // EntityQuery boidQuery = SystemAPI.QueryBuilder().WithAll<BoidTag, LocalTransform, EntitySettings, EntityVelocity>().Build();
             
-            NativeArray<LocalTransform> allTransforms = boidQuery.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
-            NativeArray<EntitySettings> allSettings = boidQuery.ToComponentDataArray<EntitySettings>(Allocator.TempJob);
+            NativeArray<LocalTransform> allTransforms = _boidQuery.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
+            NativeArray<EntitySettings> allSettings = _boidQuery.ToComponentDataArray<EntitySettings>(Allocator.TempJob);
             
             // getting a snapshot of all the boids velocity
-            NativeArray<EntityVelocity> allVelocities = boidQuery.ToComponentDataArray<EntityVelocity>(Allocator.TempJob);
+            NativeArray<EntityVelocity> allVelocities = _boidQuery.ToComponentDataArray<EntityVelocity>(Allocator.TempJob);
             
             SwarmGlobalSettings swarmGlobalSettings = SystemAPI.GetSingleton<SwarmGlobalSettings>();
             
@@ -84,7 +94,7 @@ namespace SwarmLabECS.Core
     [BurstCompile]
     internal partial struct MovementJob : IJobEntity
     {
-        [ReadOnly, DeallocateOnJobCompletion] public NativeArray<InteractionRule> InteractionMatrixFlatten;
+        [ReadOnly] public DynamicBuffer<InteractionRule> InteractionMatrixFlatten;
         [ReadOnly, DeallocateOnJobCompletion] public NativeArray<LocalTransform> AllTransforms;
         [ReadOnly, DeallocateOnJobCompletion] public NativeArray<EntitySettings> AllSettings;
         [ReadOnly, DeallocateOnJobCompletion] public NativeArray<EntityVelocity> AllVelocities;
@@ -148,7 +158,7 @@ namespace SwarmLabECS.Core
             transform.Position += entityVelocity.Value * DeltaTime;
 
             if (velMagnitude > 0.1)
-                transform.Rotation = quaternion.LookRotationSafe(entityVelocity.Value, new float3(0,1,0));
+                transform.Rotation = quaternion.LookRotationSafe(entityVelocity.Value, math.up());
         }
 
         private float3 CalculateForce(LocalTransform myTransform, EntityVelocity myVelocity, int mySpeciesId, float maxSpeed)

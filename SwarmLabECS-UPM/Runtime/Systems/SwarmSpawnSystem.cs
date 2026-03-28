@@ -1,3 +1,4 @@
+using SwarmLabECS.Components;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
@@ -5,27 +6,30 @@ using Unity.Collections;
 using Unity.Burst;
 using Random = Unity.Mathematics.Random;
 
-namespace SwarmLabECS.Core
+namespace SwarmLabECS.Systems
 {
     [BurstCompile]
     public partial struct SwarmSpawnSystem : ISystem
     {
+        // caching the query even tho it doesn't impact performance that much here but just for good practice
+        private EntityQuery _oldBoidsQuery;
+        
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<SpeciesSpawnConfig>();
             state.RequireForUpdate<SpawnSwarmRequest>(); 
+            
+            // Create a query that finds every entity with a BoidTag
+            _oldBoidsQuery = SystemAPI.QueryBuilder().WithAll<BoidTag>().Build();
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {            
             // DESTROY HAS TO BE DONE BEFORE GETTING THE SPAWN BUFFER BC IT'S A STRUCTURAL CHANGE
-            // Create a query that finds every entity with a BoidTag
-            EntityQuery oldBoidsQuery = SystemAPI.QueryBuilder().WithAll<BoidTag>().Build();
-            
             // Nuke all in one single, highly optimized call
-            state.EntityManager.DestroyEntity(oldBoidsQuery);
+            state.EntityManager.DestroyEntity(_oldBoidsQuery);
             
             DynamicBuffer<SpeciesSpawnConfig> spawnBuffer = SystemAPI.GetSingletonBuffer<SpeciesSpawnConfig>();
             
@@ -67,14 +71,13 @@ namespace SwarmLabECS.Core
                         Damping = species.Damping
                     });
                 }
-
-                EntitySettings settings = state.EntityManager.GetComponentData<EntitySettings>(species.PrefabEntity);
-    
-                // 2. Modify only the Species ID
-                settings.SpeciesId = speciesID;
     
                 // 3. Write the modified struct back to the prefab
-                state.EntityManager.SetComponentData(species.PrefabEntity, settings);
+                state.EntityManager.SetComponentData(species.PrefabEntity, new EntitySettings
+                {
+                    SpeciesId = speciesID,
+                    MaxSpeed = species.MaxSpeed
+                });
                 
                 // The 'using' keyword ensures .Dispose() is called automatically when the function ends (like a destructor).
                 // this prevents memory leaks
@@ -121,7 +124,9 @@ namespace SwarmLabECS.Core
                 /* Here, the uniform randomness will cause the boids to cluster slightly more into the center of the
                  sphere. Not especially an issue, but for true uniform random the cube root of the random number can
                  be used */
-                float randomDistance = random.NextFloat(0f, setup.Radius);
+                // CODE UPDATED TO TRUE UNIFORM DISTRIB IN A SPHERE
+                float u = random.NextFloat(0f, 1f);
+                float randomDistance = setup.Radius * math.pow(u, 1.0f / 3.0f); 
                 randomOffset = random.NextFloat3Direction() * randomDistance;
             }
             // Write the data directly to the ECS memory chunks
@@ -133,7 +138,4 @@ namespace SwarmLabECS.Core
         }
     }
     
-    public struct SpawnSwarmRequest : IComponentData
-    {
-    }
 }
