@@ -53,7 +53,10 @@ namespace SwarmLabECS.Core
 
                 if (species.HasGravity)
                 {
-                    state.EntityManager.AddComponent<EntityGravity>(species.PrefabEntity);
+                    if (!state.EntityManager.HasComponent<EntityGravity>(species.PrefabEntity)) // extra safety check
+                    {
+                        state.EntityManager.AddComponent<EntityGravity>(species.PrefabEntity);
+                    }
                     state.EntityManager.SetComponentData(species.PrefabEntity, new EntityGravity
                     {
                         Value = species.GravityValue,

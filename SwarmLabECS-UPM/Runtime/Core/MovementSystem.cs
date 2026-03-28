@@ -43,10 +43,9 @@ namespace SwarmLabECS.Core
             // getting a snapshot of all the boids velocity
             NativeArray<EntityVelocity> allVelocities = boidQuery.ToComponentDataArray<EntityVelocity>(Allocator.TempJob);
             
-            int totalSpeciesCount = SystemAPI.GetSingleton<SwarmGlobalSettings>().TotalSpeciesCount;
+            SwarmGlobalSettings swarmGlobalSettings = SystemAPI.GetSingleton<SwarmGlobalSettings>();
             
-            float cellSize = 3f; 
-            GridHash gridHash = new GridHash(cellSize);
+            GridHash gridHash = new GridHash(swarmGlobalSettings.CellSize);
 
             // make a spatial map for each boid
             int boidCount = allTransforms.Length;
@@ -68,7 +67,7 @@ namespace SwarmLabECS.Core
                 AllSettings = allSettings,
                 AllVelocities = allVelocities,
                 DeltaTime = SystemAPI.Time.DeltaTime,
-                TotalSpeciesCount = totalSpeciesCount,
+                TotalSpeciesCount = swarmGlobalSettings.TotalSpeciesCount,
                 CollisionWorld = physicsSingleton.CollisionWorld,
                 GravityLookup = gravityLookup,
                 
@@ -273,21 +272,4 @@ namespace SwarmLabECS.Core
 
     }
     
-    [BurstCompile]
-    public struct HashPositionsJob : IJobParallelFor
-    {
-        [ReadOnly] public NativeArray<LocalTransform> Positions;
-        public GridHash GridHash;
-        public NativeParallelMultiHashMap<int, int>.ParallelWriter SpatialMap;
-
-        public void Execute(int index)
-        {
-            // Get the integer cell
-            int3 gridPos = GridHash.GetGridPos(Positions[index].Position);
-            int hash = GridHash.Hash(gridPos);
-
-            // Add the array index with the corresponding hashkey
-            SpatialMap.Add(hash, index);
-        }
-    }
 }

@@ -51,6 +51,9 @@ namespace SwarmLabECS.Core
             public List<RuleSetup> rules;
         }
 
+        [Tooltip("Should be at least equal to the largest flockingRadius or separationRadius")]
+        [SerializeField] private float hashGridCellSize;
+        
         public List<SpeciesSetup> speciesList;
 
         class Baker : Baker<SwarmConfigAuthoring>
@@ -66,7 +69,8 @@ namespace SwarmLabECS.Core
                 
                 AddComponent(containerEntity, new SwarmGlobalSettings 
                 { 
-                    TotalSpeciesCount = authoring.speciesList.Count 
+                    TotalSpeciesCount = authoring.speciesList.Count,
+                    CellSize = authoring.hashGridCellSize
                 });
 
                 foreach (var species in authoring.speciesList)
@@ -124,9 +128,9 @@ namespace SwarmLabECS.Core
                 var species = speciesList[i];
                 if (species == null) continue;
 
-                if (species.rules == null) species.rules = new List<RuleSetup>();
+                species.rules ??= new List<RuleSetup>();
 
-                // 1. Force the list length to match the total number of species
+                // Force the list length to match the total number of species
                 while (species.rules.Count < totalSpecies)
                 {
                     species.rules.Add(new RuleSetup());
@@ -136,7 +140,7 @@ namespace SwarmLabECS.Core
                     species.rules.RemoveAt(species.rules.Count - 1);
                 }
 
-                // 2. Auto-name the rules so the user can't mess up the order
+                // Auto-name the rules so the user can't mess up the order
                 for (int targetIndex = 0; targetIndex < totalSpecies; targetIndex++)
                 {
                     string targetName = "Unknown";
@@ -145,7 +149,7 @@ namespace SwarmLabECS.Core
                         targetName = speciesList[targetIndex].prefab.name;
                     }
                     
-                    // Update the label. E.g., "vs Bird" or "vs Bee"
+                    // Update the label
                     species.rules[targetIndex].targetSpeciesName = $"{targetName} (ID: {targetIndex})";
                 }
             }
@@ -189,6 +193,7 @@ namespace SwarmLabECS.Core
     public struct SwarmGlobalSettings : IComponentData
     {
         public int TotalSpeciesCount;
+        public float CellSize;
     }
     
 }
