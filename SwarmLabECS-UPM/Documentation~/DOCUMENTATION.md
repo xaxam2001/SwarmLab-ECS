@@ -40,12 +40,22 @@ If you want to modify the package source code:
 ## Workflows
 
 ### 1. Creating an Entity Template
+
+<p align="center">
+    <img src="SwarmLabECS-UPM/Documentation~/PrefabExample.png" alt="Prefab Setup" width="40%" />
+</p>
+
 SwarmLabECS uses a "Template and Injector" architecture. Prefabs act as empty structural shells.
 1. Create a 3D Model or simple Mesh GameObject in your scene.
 2. Add the `EntityAuthoring` script to it.
 3. Drag the GameObject into your Project window to make it a Prefab.
 
 ### 2. Setting up the Swarm Manager
+
+<p align="center">
+    <img src="SwarmLabECS-UPM/Documentation~/SwarmManagerConfig.png" alt="SwarmManager GameObject Setup" width="50%" />
+</p>
+
 The `SwarmManager` is the brain of the simulation and acts as the Data Injector for your templates.
 1. Create an empty GameObject in your scene named "SwarmManager".
 2. Add the `SwarmManager` and `SwarmConfigAuthoring` components.
